@@ -1,156 +1,332 @@
-# 💰 Sistema de Cobranças — Interno
+````md
+# 💰 Sistema Interno de Cobranças
 
-Sistema interno de lançamento e controle de cobranças.
-Substitui planilhas manuais do Excel com uma interface rápida e centralizada.
+Sistema interno desenvolvido para substituir o controle manual em Excel utilizado pela equipe de cobrança.
+
+O projeto foi construído com foco em:
+- velocidade operacional;
+- simplicidade;
+- lançamento em lote;
+- redução de erros humanos;
+- facilidade de manutenção;
+- operação em rede compartilhada.
 
 ---
 
-## 📁 Estrutura de Pastas
+# 🚀 Tecnologias Utilizadas
 
-```
-cobrancas/
+| Tecnologia | Função |
+|---|---|
+| Python | Backend principal |
+| Streamlit | Interface web |
+| SQLite | Banco de dados local |
+| SQLAlchemy | ORM e modelagem |
+| Pandas | Manipulação de dados |
+| OpenPyXL | Integração futura com Excel |
+
+---
+
+# 📁 Estrutura Atual do Projeto
+
+```txt
+Documentos cobrancas/
 │
-├── main.py                  ← Ponto de entrada (streamlit run main.py)
-├── requirements.txt         ← Dependências Python
-├── check_env.py             ← Verifica se o ambiente está OK
-├── .gitignore
-│
-├── app/                     ← Páginas e componentes da interface
-│   └── __init__.py
-│
-├── database/                ← Banco de dados e modelos
+├── app/
 │   ├── __init__.py
-│   ├── models.py            ← Definição das tabelas (SQLAlchemy ORM)
-│   ├── connection.py        ← Conexão com SQLite
-│   ├── init_db.py           ← Script para criar/verificar o banco
-│   └── cobrancas.db         ← Gerado automaticamente (não versionar)
+│   ├── lancamento.py
+│   └── consulta.py
 │
-├── utils/                   ← Funções auxiliares reutilizáveis
-│   └── __init__.py
+├── database/
+│   ├── __init__.py
+│   ├── cobrancas.db
+│   ├── connection.py
+│   ├── init_db.py
+│   ├── models.py
+│   └── queries.py
 │
-├── exports/                 ← Arquivos Excel exportados pelo sistema
-│   └── .gitkeep
+├── exports/
+├── imports/
+├── utils/
 │
-└── imports/                 ← Arquivos Excel para importação
-    └── .gitkeep
+├── main.py
+├── requirements.txt
+├── check_env.py
+├── README.md
+└── .gitignore
+````
+
+---
+
+# ⚙️ Pré-requisitos
+
+* Python 3.12
+* VS Code
+* Extensão Python do VS Code
+
+> ⚠️ Python 3.13 pode causar incompatibilidades com Pandas no Windows.
+
+---
+
+# 🚀 Como Executar
+
+## 1. Abrir projeto no VS Code
+
+```txt
+Arquivo → Abrir Pasta
+```
+
+Selecione:
+
+```txt
+Documentos cobrancas
 ```
 
 ---
 
-## ⚙️ Pré-requisitos
+## 2. Criar ambiente virtual
 
-- Python 3.10 ou superior
-- VS Code com extensão **Python** instalada
-
----
-
-## 🚀 Como Executar no VS Code — Passo a Passo
-
-### 1. Abrir o projeto
-
-```
-File → Open Folder → selecione a pasta cobrancas/
-```
-
-### 2. Criar ambiente virtual
-
-Abra o terminal integrado do VS Code (`Ctrl + J` ou `Terminal → New Terminal`) e execute:
+### Windows
 
 ```bash
-# Windows
 python -m venv .venv
-.venv\Scripts\activate
-
-# macOS / Linux
-python3 -m venv .venv
-source .venv/bin/activate
 ```
 
-### 3. Instalar dependências
+---
+
+## 3. Ativar ambiente virtual
+
+### PowerShell
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.venv\Scripts\activate
+```
+
+### CMD
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+---
+
+## 4. Instalar dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Verificar ambiente
+---
+
+## 5. Verificar ambiente
 
 ```bash
 python check_env.py
 ```
 
-Saída esperada:
-```
-✅ Streamlit        1.35.0
-✅ SQLAlchemy       2.0.30
-✅ Pandas           2.2.2
-✅ OpenPyXL         3.1.2
-✅ Ambiente OK!
-```
+---
 
-### 5. Inicializar o banco de dados
+## 6. Inicializar banco
 
 ```bash
 python database/init_db.py
 ```
 
-Saída esperada:
-```
-✅ Tabelas criadas com sucesso:
-   • empresas
-   • cobrancas
-✅ Banco pronto para uso!
-```
+---
 
-### 6. Executar o sistema
+## 7. Executar sistema
 
 ```bash
 streamlit run main.py
 ```
 
-O navegador abrirá automaticamente em `http://localhost:8501`
+---
+
+# 🌐 Acesso
+
+Após executar:
+
+```txt
+http://localhost:8501
+```
 
 ---
 
-## 🗄️ Tabelas do Banco de Dados
+# 📋 Funcionalidades Implementadas
 
-### `empresas`
-| Coluna      | Tipo     | Descrição                        |
-|-------------|----------|----------------------------------|
-| id          | INTEGER  | Chave primária                   |
-| nome        | TEXT     | Nome da empresa (único)          |
-| criado_em   | DATETIME | Data de cadastro                 |
+# ✅ Etapa 1 — Estrutura Base
 
-### `cobrancas`
-| Coluna           | Tipo     | Descrição                        |
-|------------------|----------|----------------------------------|
-| id               | INTEGER  | Chave primária                   |
-| numero_nota      | TEXT     | Número da nota fiscal            |
-| empresa_nome     | TEXT     | Nome da empresa                  |
-| data_emissao     | DATE     | Data de emissão da nota          |
-| data_vencimento  | DATE     | Data de vencimento               |
-| valor            | FLOAT    | Valor da cobrança                |
-| pago             | BOOLEAN  | Status de pagamento              |
-| data_pagamento   | DATE     | Data em que foi pago (opcional)  |
-| observacao       | TEXT     | Observações livres (opcional)    |
-| criado_em        | DATETIME | Data de criação do registro      |
-| atualizado_em    | DATETIME | Última atualização               |
+* Banco SQLite
+* Modelagem ORM
+* Conexão SQLAlchemy
+* Inicialização automática
+* Estrutura modular
+* Navegação inicial
 
 ---
 
-## 🌐 Uso em Rede Compartilhada
+# ✅ Etapa 2 — Lançamento em Lote
 
-Para que toda a equipe acesse o mesmo sistema:
+## Funcionalidades
 
-1. Coloque a pasta `cobrancas/` em uma pasta de rede compartilhada
-2. Execute `streamlit run main.py` na máquina servidora
-3. Cada usuário acessa via navegador: `http://IP-DA-MAQUINA:8501`
+* Data de vencimento única
+* Tabela editável
+* Múltiplas cobranças simultâneas
+* Salvamento em lote
+* Persistência no SQLite
+* Empresas criadas automaticamente
+* Estrutura otimizada para velocidade operacional
+
+## Campos
+
+* Número da nota
+* Empresa
+* Data de emissão
+* Valor
+* Vencimento
 
 ---
 
-## 📋 Roadmap de Etapas
+# ✅ Etapa 3 — Consulta de Cobranças
 
-- [x] **Etapa 1** — Estrutura base, banco de dados, modelagem
-- [ ] **Etapa 2** — Lançamento em lote de cobranças
-- [ ] **Etapa 3** — Pesquisa, filtros e marcação de pagamento
-- [ ] **Etapa 4** — Exportação para Excel
-- [ ] **Etapa 5** — Importação de Excel antigo
+## Funcionalidades
+
+* Consulta completa de cobranças
+* Pesquisa rápida
+* Filtros avançados
+* Status automático
+* Totalizadores
+* Destaque visual
+* Atalhos rápidos
+
+## Filtros
+
+* Empresa
+* Número da nota
+* Status
+* Vencimento inicial
+* Vencimento final
+
+## Status automáticos
+
+* 🟡 Pendente
+* 🔴 Vencido
+* ✅ Pago
+
+---
+
+# 🧠 Decisões Arquiteturais
+
+## Streamlit + SQLite
+
+Escolhido por:
+
+* simplicidade;
+* rapidez de desenvolvimento;
+* facilidade de manutenção;
+* ótimo desempenho local;
+* ideal para pequenas equipes.
+
+---
+
+# Queries Separadas da Interface
+
+Toda lógica SQL fica em:
+
+```txt
+database/queries.py
+```
+
+A interface nunca acessa o banco diretamente.
+
+Isso melhora:
+
+* organização;
+* manutenção;
+* escalabilidade.
+
+---
+
+# Status Derivado
+
+O sistema NÃO salva "Vencido" no banco.
+
+O status é calculado automaticamente:
+
+```txt
+Pago = pago == True
+Vencido = pago == False && vencimento < hoje
+Pendente = pago == False && vencimento >= hoje
+```
+
+---
+
+# 🎯 Objetivo do Projeto
+
+O foco do sistema NÃO é ser um ERP completo.
+
+O objetivo é:
+
+* acelerar lançamento de cobranças;
+* reduzir dependência do Excel;
+* melhorar produtividade da equipe;
+* reduzir erros humanos;
+* simplificar operação diária.
+
+---
+
+# 📌 Próximas Etapas
+
+## 🔜 Etapa 4 — Gerenciamento Operacional
+
+Planejado:
+
+* excluir cobrança;
+* editar cobrança;
+* marcar como pago;
+* adicionar observações.
+
+---
+
+## 🔜 Etapa 5 — Excel
+
+Planejado:
+
+* exportar Excel;
+* importar planilhas antigas;
+* compatibilidade com operação atual.
+
+---
+
+## 🔜 Etapa 6 — Inteligência Operacional
+
+Planejado:
+
+* OCR de notas;
+* leitura automática de PDF;
+* IA para preenchimento automático;
+* automações futuras.
+
+---
+
+# ⚠️ Observações Importantes
+
+* Projeto focado em uso interno.
+* Sistema otimizado para velocidade operacional.
+* Arquitetura mantida simples propositalmente.
+* O Excel continuará sendo compatível futuramente para exportação/importação.
+
+---
+
+# 👨‍💻 Desenvolvimento
+
+Projeto desenvolvido utilizando:
+
+* VS Code
+* Claude Sonnet 4.6
+* Streamlit
+* SQLAlchemy
+* SQLite
+
+```
+```
