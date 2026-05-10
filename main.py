@@ -3,7 +3,7 @@
 # Execute com: streamlit run main.py
 
 import streamlit as st
-from database.init_db import init_db
+from database.connection import init_db
 
 # ── Configuração da página ────────────────────────────────────────────────────
 st.set_page_config(
@@ -21,23 +21,31 @@ def startup():
 
 startup()
 
-# ── Interface provisória (Etapa 1) ────────────────────────────────────────────
-st.title("💰 Sistema de Cobranças")
-st.markdown("---")
+# ── Navegação lateral ─────────────────────────────────────────────────────────
+with st.sidebar:
+    st.title("💰 Cobranças")
+    st.markdown("---")
 
-st.success("✅ Banco de dados inicializado com sucesso!")
+    pagina = st.radio(
+        label="Navegação",
+        options=[
+            "📋 Lançamento em Lote",
+            "🔍 Consultar Cobranças",
+            # Etapas futuras:
+            # "📤 Exportar Excel",
+            # "📥 Importar Excel",
+        ],
+        label_visibility="collapsed",
+    )
 
-st.info(
-    "**Etapa 1 concluída** — estrutura base, banco e modelagem prontos.\n\n"
-    "A interface de lançamento de cobranças será implementada na **Etapa 2**."
-)
+    st.markdown("---")
+    st.caption("v0.3 — Etapa 3")
 
-# Diagnóstico rápido
-with st.expander("🔧 Informações do sistema"):
-    from database.connection import _DB_PATH
-    from pathlib import Path
+# ── Roteamento de páginas ─────────────────────────────────────────────────────
+if pagina == "📋 Lançamento em Lote":
+    from app.lancamento import render_lancamento
+    render_lancamento()
 
-    st.write(f"**Banco de dados:** `{Path(_DB_PATH).resolve()}`")
-    st.write(f"**Python path OK:** ✅")
-    st.write(f"**SQLAlchemy OK:** ✅")
-    st.write(f"**Streamlit OK:** ✅")
+elif pagina == "🔍 Consultar Cobranças":
+    from app.consulta import render_consulta
+    render_consulta()
