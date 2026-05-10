@@ -1,0 +1,26 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Banco de dados (não versionar dados reais)
+database/*.db
+database/*.db-shm
+database/*.db-wal
+
+# Exports gerados
+exports/*.xlsx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
