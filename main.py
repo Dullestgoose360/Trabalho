@@ -3,7 +3,7 @@
 # Execute com: streamlit run main.py
 
 import streamlit as st
-from database.connection import init_db
+from database.init_db import init_db
 
 # ── Configuração da página ────────────────────────────────────────────────────
 st.set_page_config(
